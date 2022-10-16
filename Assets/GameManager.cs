@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
     private void setImage()
     {
         GameObject[] arts = GameObject.FindGameObjectsWithTag("Art");
+        System.Array.Sort<GameObject>(arts, (x, y) => string.Compare(x.name, y.name));
         for (int i = 0; i < arts.Length; i++)
         {
             if (data.art[i].show)
