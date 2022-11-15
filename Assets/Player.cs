@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float moveSpeed = 100.0f;
+    public float moveSpeed = 5.0f;
     public float mouseSensitive = 3.0f;
     float cameraAngle = 0;
     GameObject camera;
@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
         Vector3 moveHorizontal = transform.right * xinput;
         Vector3 moveVertical = transform.forward * zinput;
         Vector3 velocity = (moveHorizontal + moveVertical).normalized * moveSpeed;
-        rb.MovePosition(transform.position + velocity * Time.deltaTime);
+        tr.position = (transform.position + velocity * Time.deltaTime);
 
         float yMouseInput = Input.GetAxisRaw("Mouse Y");
         cameraAngle -= yMouseInput * mouseSensitive;
@@ -37,5 +37,10 @@ public class Player : MonoBehaviour
         float xMouseInput = Input.GetAxisRaw("Mouse X");
         Vector3 rot = new Vector3(0f, xMouseInput, 0f) * mouseSensitive;
         rb.MoveRotation(rb.rotation * Quaternion.Euler(rot));
+
+        if(yMouseInput == 0 && xMouseInput == 0)
+        {
+            rb.angularVelocity = Vector3.zero;
+        }
     }
 }
