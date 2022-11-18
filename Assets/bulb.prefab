@@ -43,11 +43,11 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 0.7032366, g: 0, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 12
   m_SpotAngle: 165
-  m_InnerSpotAngle: 16
+  m_InnerSpotAngle: 1
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 6849401900825643461}
   m_Layer: 0
   m_Name: bulb
-  m_TagString: Untagged
+  m_TagString: bulb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 1

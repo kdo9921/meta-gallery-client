@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Rendering.PostProcessing;
 
 [System.Serializable]
 class Art
@@ -10,12 +11,21 @@ class Art
     public int idx;
     public string url;
     public bool show;
+    public bool frame;
 }
-
+[System.Serializable]
+class LightSetting
+{
+    public int idx;
+    public string color;
+    public float range;
+    public float angle;
+}
 [System.Serializable]
 class Data
 {
     public Art[] art;
+    public LightSetting[] light;
 }
 
 public class GameManager : MonoBehaviour
@@ -34,28 +44,38 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         lightmap = test0;
-        setupLightMaps();
+        //setupLightMaps();
         StartCoroutine(GetRequest(this.serverUrl + "data"));
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        
+    }
+
+    public void setLight()
+    {
+        GameObject[] bulb = GameObject.FindGameObjectsWithTag("bulb");
+        for (int i = 0; i < bulb.Length; i++)
         {
-            lightmap = test0;
-            setupLightMaps();
+            GameObject circle = bulb[i].transform.GetChild(0).gameObject;
+            Light light = bulb[i].transform.GetChild(0).GetChild(0).gameObject.GetComponent<Light>();
+            Color color;
+            ColorUtility.TryParseHtmlString(data.light[0].color + "FF", out color);
+            Renderer ren = circle.GetComponent<Renderer>();
+            ren.material.SetColor("_Color", color);
+            //ren.material.SetColor("_EmissionColor", color);
+            light.color = color;
+            light.range = data.light[0].range;
+            light.spotAngle = data.light[0].angle;
+            var postProcessVolume = GameObject.FindObjectOfType<UnityEngine.Rendering.PostProcessing.PostProcessVolume>();
+            Bloom bloom = postProcessVolume.profile.GetSetting<UnityEngine.Rendering.PostProcessing.Bloom>();
+            var colorParameter = new UnityEngine.Rendering.PostProcessing.ColorParameter();
+            colorParameter.value = color;
+            bloom.color.Override(colorParameter);
         }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            lightmap = test1;
-            setupLightMaps();
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            lightmap = test2;
-            setupLightMaps();
-        }
+
     }
 
     public void setupLightMaps()
@@ -86,6 +106,7 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log(request.downloadHandler.text);
                 data = JsonUtility.FromJson<Data>(request.downloadHandler.text);
+                setLight();
                 setImage();
             }
         }
@@ -105,6 +126,7 @@ public class GameManager : MonoBehaviour
                 int idx = data.art[i].idx - 1;
                 arts[idx].active = true;
                 arts[idx].GetComponent<GetImage>().url = serverUrl + "images/" + data.art[i].url;
+                arts[idx].GetComponent<GetImage>().isFrame = data.art[i].frame;
                 arts[idx].GetComponent<GetImage>().LoadImage();
             }
         }
