@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering.PostProcessing;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 [System.Serializable]
 class Art
@@ -22,10 +23,19 @@ class LightSetting
     public float angle;
 }
 [System.Serializable]
+class BGMSetting
+{
+    public int idx;
+    public string url;
+    public bool play;
+    public string title;
+}
+[System.Serializable]
 class Data
 {
     public Art[] art;
     public LightSetting[] light;
+    public BGMSetting[] bgm;
 }
 
 public class GameManager : MonoBehaviour
@@ -65,7 +75,7 @@ public class GameManager : MonoBehaviour
             ColorUtility.TryParseHtmlString(data.light[0].color + "FF", out color);
             Renderer ren = circle.GetComponent<Renderer>();
             ren.material.SetColor("_Color", color);
-            //ren.material.SetColor("_EmissionColor", color);
+            ren.material.SetColor("_EmissionColor", color);
             light.color = color;
             light.range = data.light[0].range;
             light.spotAngle = data.light[0].angle;
@@ -108,6 +118,7 @@ public class GameManager : MonoBehaviour
                 data = JsonUtility.FromJson<Data>(request.downloadHandler.text);
                 setLight();
                 setImage();
+                StartCoroutine(setBGM());
             }
         }
     }
@@ -131,4 +142,31 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    IEnumerator setBGM()
+    {
+        yield return new WaitForSeconds(1.5f);
+        if (data.bgm.Length != 0)
+        {
+            if (data.bgm[0].play)
+            {
+                AudioSource audio = GameObject.Find("Main Camera").GetComponent<AudioSource>();
+                
+                UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(serverUrl + "bgm/" + data.bgm[0].url, AudioType.MPEG);
+                yield return www.SendWebRequest();
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(www.error);
+                }
+                else
+                {
+                    Debug.Log("재생");
+                    audio.clip = DownloadHandlerAudioClip.GetContent(www);
+                    audio.Play();
+                }
+            }
+        }
+        
+    }
+
 }
