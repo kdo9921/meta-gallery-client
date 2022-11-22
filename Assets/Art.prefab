@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 6304538893148771194}
   - component: {fileID: 1693478272885148665}
   - component: {fileID: 2973147282696441788}
+  - component: {fileID: 8960558050430872323}
+  - component: {fileID: 2865794623903077228}
   m_Layer: 0
   m_Name: Art
   m_TagString: Art
@@ -113,8 +115,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa70a911a520b41c6bc71573d3c3b3db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  idx: 0
   isFrame: 0
   url: 
+--- !u!65 &8960558050430872323
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999959764593883160}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1.2}
+  m_Center: {x: 0, y: 0, z: -0.6}
+--- !u!65 &2865794623903077228
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999959764593883160}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8, y: 0.8, z: 2}
+  m_Center: {x: 0, y: 0, z: -1}
 --- !u!1 &3525205765971783360
 GameObject:
   m_ObjectHideFlags: 0

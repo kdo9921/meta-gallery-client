@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering.PostProcessing;
@@ -13,6 +14,10 @@ class Art
     public string url;
     public bool show;
     public bool frame;
+    public bool explan;
+    public string title;
+    public string artist;
+    public string info;
 }
 [System.Serializable]
 class LightSetting
@@ -43,25 +48,55 @@ public class GameManager : MonoBehaviour
     Data data;
     public string serverUrl = "https://gallery.darae.dev/";
 
+    public GameObject explanUI;
+    public TMP_Text title;
+    public TMP_Text artist;
+    public TMP_Text info;
+
+    public int info_idx;
+    public bool info_area;
+
+    /*
     public Texture2D[] test0;
     public Texture2D[] test1;
     public Texture2D[] test2;
     private LightmapData[] lightmapData;
-
     Texture2D[] lightmap;
+    */
 
     // Start is called before the first frame update
     void Start()
     {
-        lightmap = test0;
-        //setupLightMaps();
+        //lightmap = test0;
+        //setupLightMaps(); //저사양 기기용으로 빌드할때 쓸것
+        explanUI.active = false;
         StartCoroutine(GetRequest(this.serverUrl + "data"));
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (info_area)
+        {
+            if (data.art[info_idx].explan)
+            {
+                if (Input.GetKeyDown(KeyCode.E)) {
+                    if (explanUI.active)
+                    {
+                        explanUI.active = false;
+                    } else
+                    {
+                        title.text = data.art[info_idx].title;
+                        artist.text = "작가 : " + data.art[info_idx].artist;
+                        info.text = data.art[info_idx].info;
+                        explanUI.active = true;
+                    }
+                }
+            }
+        } else
+        {
+            explanUI.active = false;
+        }
     }
 
     public void setLight()
@@ -87,7 +122,7 @@ public class GameManager : MonoBehaviour
         }
 
     }
-
+    /*
     public void setupLightMaps()
     {
         lightmapData = new LightmapData[lightmap.Length / 2];
@@ -100,7 +135,7 @@ public class GameManager : MonoBehaviour
         }
         LightmapSettings.lightmaps = lightmapData;
     }
-    
+    */
 
     private IEnumerator GetRequest(string uri)
     {
@@ -136,6 +171,7 @@ public class GameManager : MonoBehaviour
             {
                 int idx = data.art[i].idx - 1;
                 arts[idx].active = true;
+                arts[idx].GetComponent<GetImage>().idx = i;
                 arts[idx].GetComponent<GetImage>().url = serverUrl + "images/" + data.art[i].url;
                 arts[idx].GetComponent<GetImage>().isFrame = data.art[i].frame;
                 arts[idx].GetComponent<GetImage>().LoadImage();

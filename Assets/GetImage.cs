@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class GetImage : MonoBehaviour
 {
+    public int idx;
     public bool isFrame = false;
     public string url = "";
 
@@ -13,7 +14,7 @@ public class GetImage : MonoBehaviour
     Texture tex;
     Transform tr;
     GameObject frame;
-
+    GameObject gm;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +23,7 @@ public class GetImage : MonoBehaviour
         tex = gameObject.GetComponent<Texture>();
         tr = gameObject.GetComponent<Transform>();
         frame = tr.Find("frame").gameObject;
+        gm = GameObject.Find("GameManager");
     }
 
     public void LoadImage()
@@ -43,6 +45,8 @@ public class GetImage : MonoBehaviour
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.Log(www.error);
+            Debug.Log(url + " 불러오기 실패");
+            this.gameObject.active = false;
         }
         else
         {
@@ -68,5 +72,14 @@ public class GetImage : MonoBehaviour
             }
             ren.material.SetTexture("_MainTex", tex);
         }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        gm.GetComponent<GameManager>().info_idx = idx;
+        gm.GetComponent<GameManager>().info_area = true;
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        gm.GetComponent<GameManager>().info_area = false;
     }
 }
