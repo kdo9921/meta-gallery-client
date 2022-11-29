@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
     public int info_idx;
     public bool info_area;
 
+    GameObject[] arts;
     /*
     public Texture2D[] test0;
     public Texture2D[] test1;
@@ -71,6 +72,7 @@ public class GameManager : MonoBehaviour
         //setupLightMaps(); //저사양 기기용으로 빌드할때 쓸것
         explanUI.active = false;
         StartCoroutine(GetRequest(this.serverUrl + "data"));
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -87,7 +89,13 @@ public class GameManager : MonoBehaviour
                     } else
                     {
                         title.text = data.art[info_idx].title;
-                        artist.text = "작가 : " + data.art[info_idx].artist;
+                        if (data.art[info_idx].artist != "")
+                        {
+                            artist.text = "작가 : " + data.art[info_idx].artist;
+                        } else
+                        {
+                            artist.text = "";
+                        }
                         info.text = data.art[info_idx].info;
                         explanUI.active = true;
                     }
@@ -96,6 +104,14 @@ public class GameManager : MonoBehaviour
         } else
         {
             explanUI.active = false;
+        }
+        if (Input.GetKeyDown(KeyCode.R)) {
+            for (int i = 0; i < arts.Length; i++)
+            {
+                arts[i].active = true;
+            }
+            StartCoroutine(GetRequest(this.serverUrl + "data"));
+            setLight();
         }
     }
 
@@ -159,7 +175,7 @@ public class GameManager : MonoBehaviour
     }
     private void setImage()
     {
-        GameObject[] arts = GameObject.FindGameObjectsWithTag("Art");
+        arts = GameObject.FindGameObjectsWithTag("Art");
         System.Array.Sort<GameObject>(arts, (x, y) => string.Compare(x.name, y.name));
         for (int i = 0; i < arts.Length; i++)
         {
